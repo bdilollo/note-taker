@@ -1,6 +1,8 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const uuid = require('./public/assets/helpers/uuid')
+let notesList = [];
 
 const PORT = process.env.PORT || 3001;
 
@@ -25,8 +27,8 @@ app.get('/api/notes', (req, res) =>
             console.log(`Error (${err}): couldn't read file`);
             return;
         }
-        let notesJSON = JSON.parse(data);
-        res.json(notesJSON);
+        notesList = JSON.parse(data);
+        res.json(notesList);
     })
 );
 
@@ -34,9 +36,19 @@ app.get('*', (req, res) =>
 res.sendFile(path.join(__dirname, 'public/index.html'))
 );
 
-app.post('/api/notes', (req, res) => 
-
-);
+app.post('/api/notes', (req, res) => {
+    const { title, text } = req.body;
+    const newNote = {
+        title,
+        text,
+        id: uuid()
+    };
+    
+    console.log(JSON.stringify(newNote));
+    console.log('notesList: ' + JSON.stringify(notesList))
+    notesList.push(newNote);
+    console.log(notesList);
+});
     
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
