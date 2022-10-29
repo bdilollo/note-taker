@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const uuid = require('./public/assets/helpers/uuid')
+const uniqueID = require('generate-unique-id');
 let notesList = [];
 
 const PORT = process.env.PORT || 3001;
@@ -25,7 +25,6 @@ app.get('/api/notes', (req, res) =>
     fs.readFile('./db/db.json', 'utf-8', (err, data) => {
         if(err) {
             console.log(`Error (${err}): couldn't read file`);
-            return;
         }
         notesList = JSON.parse(data);
         res.json(notesList);
@@ -41,13 +40,14 @@ app.post('/api/notes', (req, res) => {
     const newNote = {
         title,
         text,
-        id: uuid()
+        id: uniqueID()
     };
     
-    console.log(JSON.stringify(newNote));
-    console.log('notesList: ' + JSON.stringify(notesList))
     notesList.push(newNote);
-    console.log(notesList);
+    const notesListString = JSON.stringify(notesList, null, '\t');
+    fs.writeFile('./db/db.json', notesListString, (err) =>
+        err ? console.error(err) : console.log('success!')
+    )
 });
     
 
