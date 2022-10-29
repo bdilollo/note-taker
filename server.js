@@ -59,6 +59,22 @@ app.post('/api/notes', (req, res) => {
     )
     res.json(notesList);
 });
+
+// DELETE request on the /api/notes route with a specific note id appended to the path
+// deletes note with matching id and returns updated JSON object
+app.delete('/api/notes/:id', (req, res) => {
+    let deleteBtnId = req.params.id;
+    for(let i=0; i<notesList.length; i++) {
+        if(deleteBtnId === notesList[i].id) {
+            notesList.splice(i,1);
+        }
+    }
+    const notesListString = JSON.stringify(notesList, null, '\t');
+    fs.writeFile('./db/db.json', notesListString, (err) =>
+        err ? console.error(err) : console.log('success!')
+    )
+    res.json(notesList);
+});
     
 // listening on the appropriate port, with a message in the console when successful
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
