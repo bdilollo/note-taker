@@ -48,6 +48,7 @@ app.post('/api/notes', (req, res) => {
     fs.writeFile('./db/db.json', notesListString, (err) =>
         err ? console.error(err) : console.log('success!')
     )
+    res.json(notesList);
 });
     
 
